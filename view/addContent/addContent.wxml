@@ -12,14 +12,6 @@
       <radio checked="{{item.checked}}" value='{{index}}'/>{{item.value}}
     </label>
    </radio-group>
-    <!--<radio-group class="title_value" style="display:none">  
-      <label><radio value="radio1"/>好习惯</label>
-      <label><radio value="radio1"/>坏习惯</label>
-    </radio-group>
-    <radio-group class="title_value" style="display:none">  
-      <label><radio value="radio1"/>享受</label>
-      <label><radio value="radio1"/>腐败</label>
-    </radio-group> -->
   </view>
   <view class="section">
     <view class="section__title">分数</view>

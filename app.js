@@ -1,61 +1,4 @@
 var config = require("./config.js");
-var getData = function(){
-  //模拟获取数据
-  var taskTitle = ["value","score","time"];
-  wx.request({
-    url: config.alltask,
-    success:function(result){
-      console.log(result.data);
-    }
-  })
-  wx.setStorage({
-    key: 'totalscore',
-    data: 0,
-  })
-  wx.setStorage({
-    key: 'task',
-    data: {
-      day: getArray(taskTitle, 3, "day"),
-      week: getArray(taskTitle, 3, "week"),
-      common: getArray(taskTitle, 3, "common"),
-      other: getArray(taskTitle, 3, "other")
-    },
-  })
-  wx.setStorage({
-    key: 'enjoy',
-    data: {
-      enjoy1: getArray(taskTitle, 3, "enjoy1"),
-      enjoy2: getArray(taskTitle, 3, "enjoy2")
-    },
-  })
-  wx.setStorage({
-    key: 'habit',
-    data: {
-      goobhabit: getArray(taskTitle, 3, "goodhabit"),
-      badhabit: getArray(taskTitle, 3, "badhabit")
-    }
-  })
-  wx.setStorage({
-    key: 'opHistory',
-    data: []
-  })
-}
-var index = 0;
-var getArray = function (oj,len,typeName){
-    var arr = [];
-    for(var i = 0; i < len; i++){
-      var o = {};
-      o.value = typeName + i;
-      o.score = i + 10;
-      o.time = i + 1;
-      o.period = typeName;
-      o.isdisplay=false;
-      o.complated = 0;
-      o.id = index++;
-      arr.push(o);
-    }
-    return arr;
-}
 App({
 
   /**
@@ -84,7 +27,6 @@ App({
     var info = wx.getSystemInfoSync();
     var hg = info.windowHeight;
     this.globalData.height = hg - 66;
-    getData();
   },
   
 

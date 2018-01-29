@@ -8,7 +8,7 @@
     <label id='task_3' class="{{index == 3?'flex-item-selected':'flex-item' }} bc_end" bindtap='switchmemu'>副本</label>
   </view>
 </view>
-<scroll-view  scroll-y="true" style='height:{{height}}px;'>
+<scroll-view  scroll-y="true" style='height:{{height}}px;' bindtap='menuClick'>
     <view wx:for-items="{{task}}" wx:key="{{item.index}}">
       <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.display?"display:block":"display:none"}}'bind:tap="complateCont">
         <view class='leftview1'>
