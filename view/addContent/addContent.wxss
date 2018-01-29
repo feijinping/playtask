@@ -1,0 +1,16 @@
+/* view/addContent/addContent.wxss */
+.section__title{
+  float: left;
+  margin-left: 50rpx;
+  margin-top: 10rpx;
+  width: 110rpx;
+  font-size: 19px;
+}
+.title_value{
+  width: 400rpx;
+  float: left;
+}
+.section{
+  margin: 30rpx 5%;
+  height: 50rpx;
+}

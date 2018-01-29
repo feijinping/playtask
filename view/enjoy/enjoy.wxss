@@ -1,0 +1,4 @@
+/* view/enjoy/enjoy.wxss */
+.bc_green{
+  width: 29%;
+}

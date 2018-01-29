@@ -1,0 +1,75 @@
+/* view/interface/interf.wxss */
+.section{
+  white-space: nowrap;
+  text-align: center;
+}
+ .flex-item{
+  height: 60rpx;
+  display: inline-block;
+  text-align: center;
+  line-height:60rpx;
+  width: 24%;
+  font-size: 40rpx;
+  color: #66CCFF;
+}
+.flex-item-selected{
+  height: 60rpx;
+  display: inline-block;
+  background-color: #66CCFF;
+  text-align: center;
+  line-height:60rpx;
+  width: 24%;
+  font-size: 40rpx;
+  color: white;
+}
+.bc_start{
+  border-right: 1rpx #66CCFF solid;
+}
+
+.task_item{
+  height: 8%;
+  width:  95%;
+  margin:20rpx 3%;
+}
+
+text{
+  font:normal 12px/20px arial,sans-serif;
+}
+view{
+  font:normal 15px/20px arial,sans-serif;
+}
+.add_img{
+  width: 15px;
+  height: 15px;
+}
+.operation_img{
+  height: 15px;
+  width:15px;
+  float: right;
+  margin-right: 20px;
+}
+.operation_img_hide{
+  height: 15px;
+  width:15px;
+  float: right;
+  margin-right: 20px;
+  display: none;
+}
+.title-sty{
+  font-size: 18px;
+  text-align: center;
+}
+.center_view{
+  text-align: center;
+}
+.margin-row{
+ margin-top: 20rpx;
+ margin-left: 50rpx;
+}
+input{
+  border: 1px #E0E0E0 solid
+}
+.score_time{
+  float: right;
+  margin-right:10px; 
+}

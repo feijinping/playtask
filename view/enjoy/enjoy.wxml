@@ -1,0 +1,14 @@
+<!--view/enjoy/enjoy.wxml-->
+<import src="../template/compont.wxml"/>
+<view>
+  <view class="section">
+    <view class="flex-wrp enjoy_bc" style="flex-direction:row;">
+      <label id='enjoy_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" bindtap='gettask'>享受</label>
+      <label id='enjoy_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_end" bindtap='gettask'>腐败</label>
+    </view>
+  </view>
+</view>
+<scroll-view  scroll-y="{{true}}" style='height:{{height}}px;'>
+   <template is="task" data="{{task:enjoy}}"/>
+</scroll-view>
+<include src="../template/footer.wxml" data="{{score:getApp().globalData.score}}"/>

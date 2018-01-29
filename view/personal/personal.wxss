@@ -1,0 +1,21 @@
+/* view/personal/personal.wxss */
+.avatar{
+  width: 100%;
+  height: 200rpx;
+  text-align: center;
+}
+.operation{
+  float: left;
+  margin-left: 30rpx;
+  margin-top: 50rpx;
+}
+.userinfo-avatar{
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+  border: 1px #F0F0F0 solid;
+}
+.operation-item{
+  margin: 50rpx;
+}

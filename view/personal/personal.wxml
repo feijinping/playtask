@@ -1,0 +1,24 @@
+<!--view/personal/personal.wxml-->
+<view class="pt_all">
+  <view class='avatar'>
+    <image class="userinfo-avatar" src='{{userInfo.avatarUrl}}' backgroud-size="cover"></image>
+    <view>
+    <text>{{userInfo.nickName}}</text>
+    </view>
+  </view>
+  <view class='operation'>
+    <view class='operation-item'>
+      历史记录
+    </view>
+    <view class='operation-item'>
+      钱包
+    </view>
+    <view class='operation-item'>
+      反馈
+    </view>
+    <view class='operation-item'>
+      设置
+    </view>
+  </view>
+</view>
+

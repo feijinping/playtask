@@ -1,0 +1,6 @@
+.bc_blue{
+  width: 25%;
+}
+.pri_set{
+  margin: 0 10rpx;
+}
