@@ -15,7 +15,7 @@ Page({
     score:1,
     index:0,
     height: getApp().globalData.height,
-    showcomplate:false
+    complateCheck:false
   },
 
   /**
@@ -23,6 +23,11 @@ Page({
    */
   onLoad: function (options) {
     var tasks = wx.getStorageSync("task");
+    for(let task in tasks){
+      for(let item in tasks[task]){
+        tasks[task][item].display = true;
+      }
+    }
     this.setData({ task: tasks.day });
     this.setData({ tasks: tasks });
     this.setData({ score: wx.getStorageSync("totalscore") });
@@ -33,7 +38,7 @@ Page({
   onShareAppMessage: function () {
   
   },
-  gettask : function(e){
+  switchmemu : function(e){
     var id = e.target.id.split("_")[1]-0;
     if(id == 3){
       this.setData({ istask: false });
@@ -41,6 +46,7 @@ Page({
       this.setData({ istask: true });
     }
     index = id;
+    this.setData({ complateCheck: false});
     this.setData({index:id});
     this.setData({ task: this.data.tasks[tils[id]]});
   },
@@ -90,14 +96,46 @@ Page({
     })
   },
   complateCont:function(e){
-    var id = e.target.id - 0;
-    compont.complateCont(id, "task", tils[index]);
-    this.setData({ tasks:wx.getStorageSync("task")});
-    this.setData({ task: wx.getStorageSync("task")[tils[index]] });
-    this.setData({ score: wx.getStorageSync("totalscore") });
+    var id = e.currentTarget.id.split("_")[1] - 0;
+    var task = this.data.task;
+    var ts = task[id];
+    if (this.data.complateCheck){
+      ts.complated -= 1;
+      if (ts.complated == 0){
+        ts.display = false;
+      }
+    }else{
+      ts.complated += 1;
+      if (ts.complated >= ts.time) {
+        ts.display = false;
+      }
+    }
+    
+    var tasks = this.data.tasks;
+    tasks[tils[index]] = task;
+    this.setData({ task: task});
+    this.setData({ tasks: tasks });
   }, 
   showComplate : function (e) {
-    this.setData({ showcomplate: this.data.showcomplate?false:true});
-    this.onLoad();
+    var zx = !this.data.complateCheck;
+    var task = this.data.task;
+    for(let i = 0; i < task.length; i++){
+      if (zx){
+        if (task[i].complated != 0){
+          task[i].display = true;
+        }else{
+          task[i].display = false;
+        }
+      }else{
+        if (task[i].complated < task[i].time) {
+          task[i].display = true;
+        } else {
+          task[i].display = false;
+        }
+      }
+    }
+    this.setData({ task: task });
+    
+    this.setData({ complateCheck: zx });
   }
 })

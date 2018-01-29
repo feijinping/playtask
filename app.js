@@ -1,8 +1,9 @@
+var config = require("./config.js");
 var getData = function(){
   //模拟获取数据
   var taskTitle = ["value","score","time"];
   wx.request({
-    url: "http://111.231.202.166:8080/TaskEnjoy/goodHabit/allGoodHabit",
+    url: config.alltask,
     success:function(result){
       console.log(result.data);
     }

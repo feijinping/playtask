@@ -9,6 +9,16 @@
   </view>
 </view>
 <scroll-view  scroll-y="{{true}}" style='height:{{height}}px;'>
-   <template is="task" data="{{task:enjoy}}"/>
+   <!-- <template is="task" data="{{task:enjoy}}"/> -->
+   <view wx:for-items="{{enjoy}}" wx:key="{{item.index}}">
+    <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.time==item.complated||showcomplate?"display:none":"display:block"}}'>
+      <checkbox id='{{index}}' bind:tap="complateCont" checked='{{item.time == 0?true:false}}' disabled='{{item.time == item.complated}}'/>{{item.value}}
+      <view class='score_time'>
+        <text>{{item.score}}/{{item.time == -1?'∞':item.time}}/{{item.complated}}</text>
+      </view>
+        <image id="editimg_{{index}}" src='../../image/edit.jpg' class="{{item.isdisplay?'operation_img':'operation_img_hide'}}" bind:tap="addContent"></image>
+        <image id="delimg_{{index}}" src='../../image/delete.jpg' class="{{item.isdisplay?'operation_img':'operation_img_hide'}}" bind:tap="deleteContent"></image>
+    </view>
+  </view>
 </scroll-view>
 <include src="../template/footer.wxml" data="{{score:getApp().globalData.score}}"/>

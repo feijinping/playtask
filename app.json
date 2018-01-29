@@ -1,7 +1,6 @@
 {
   "pages": [
     "view/task/task",
-    "view/habit/habit",
     "view/enjoy/enjoy",
     "view/addContent/addContent",
     "view/personal/personal"
@@ -23,12 +22,6 @@
         "iconPath": "image/2-2.jpg",
         "selectedIconPath": "image/2-1.jpg",
         "text": "享受"
-      },
-      {
-        "pagePath": "view/habit/habit",
-        "iconPath": "image/3-1.jpg",
-        "selectedIconPath": "image/3-2.jpg",
-        "text": "习惯"
       },
       {
         "pagePath": "view/personal/personal",

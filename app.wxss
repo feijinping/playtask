@@ -32,9 +32,9 @@
   margin:20rpx 3%;
 }
 
-text{
-  font:normal 12px/20px arial,sans-serif;
-}
+/* text{
+  font:normal 12px/12px arial,sans-serif;
+} */
 view{
   font:normal 15px/20px arial,sans-serif;
 }

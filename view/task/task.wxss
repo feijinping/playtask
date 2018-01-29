@@ -4,3 +4,20 @@
 .pri_set{
   margin: 0 10rpx;
 }
+.leftview1{
+  float: left;
+  height: 40px;
+  width: 30%;
+  color: #9D9D9D;
+}
+.leftview2{
+  float: left;
+  height: 40px;
+  width: 70%;
+  color: #A6FFA6;
+}
+.score_time{
+  font-size: 25px;
+  padding-top: 5px;
+  
+}
