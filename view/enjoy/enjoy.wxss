@@ -11,3 +11,29 @@
 .operation_img_hide{
   display: none;
 }
+.leftview1{
+  float: left;
+  height: 40px;
+  width: 30%;
+  color: #9D9D9D;
+}
+.leftview2{
+  float: left;
+  height: 40px;
+  width: 70%;
+  color: #FF0000;
+}
+.score_time{
+  font-size: 25px;
+  padding-top: 5px;
+  
+}
+.operation_img{
+  height: 20px;
+  width:20px;
+  float: right;
+  margin-right: 20px;
+}
+.operation_img_hide{
+  display: none;
+}

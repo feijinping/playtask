@@ -4,6 +4,7 @@ var path = [];
 var id = -1;
 var period = ["DAILY","WEEKLY","NONE"];
 var config = require("../../config.js");
+var app = getApp();
 Page({
 
   /**
@@ -93,10 +94,12 @@ Page({
   },
   formSubmit : function(e){
     var task = this.data.task;
+    var userid = app.globalData.userInfo.id;
     delete task["display"];
     delete task["opdisplay"];
     var va = e.detail.value;
     task.name=va.value;
+    task.userid = userid;
     task.score = va.score;
     task.period = period[va.period];
     task.totalTime = va.time;

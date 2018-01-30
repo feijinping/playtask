@@ -1,8 +1,8 @@
 {
   "pages": [
+    "view/enjoy/enjoy",
     "view/task/task",
     "view/addContent/addContent",
-    "view/enjoy/enjoy",
     "view/personal/personal"
   ],
   "tabBar": {

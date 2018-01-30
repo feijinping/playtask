@@ -1,7 +1,8 @@
 // view/enjoy/enjoy.js
 var compont = require("../template/compont.js");
-var tils = ["enjoy1", "enjoy2"];
+var tils = ["good", "bad"];
 var index = 0,front_id = -1;
+var config = require("../../config.js");
 Page({
 
   /**
@@ -12,16 +13,45 @@ Page({
     score: wx.getStorageSync("totalscore"),
     enjoys: wx.getStorageSync("enjoy"),
     enjoy:[],
-    index:0
+    index:0,
+    complateCheck:false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({ enjoys: wx.getStorageSync("enjoy") })
-    this.setData({ enjoy: this.data.enjoys[tils[0]]});
-    this.setData({ score: wx.getStorageSync("totalscore") });
+    var init = (enjoys)=>{
+      this.setData({ enjoys: enjoys })
+      this.setData({ enjoy: enjoys[tils[0]] });
+    }
+    var initScore = (data)=>{
+      this.setData({ score: data.banlance});
+    }
+    wx.request({
+      url: config.allEnjoy,
+      success:function(result){
+        var enjoys = result.data;
+        var enjoyOfGood=[],enjoyOfBad = [];
+        for (let i = 0; i < enjoys.length; i ++){
+          var enjoy = enjoys[i];
+          enjoy.display = true;
+          enjoy.opdisplay = false;
+          if(enjoy.tag === "good"){
+            enjoyOfGood.push(enjoy);
+          }else{
+            enjoyOfBad.push(enjoy);
+          }
+        }
+        init({
+          good:enjoyOfGood,
+          bad:enjoyOfBad
+        })
+      },
+      fail:function(err){
+        console.log(err);
+      }
+    })
   },
 
   /**
@@ -35,7 +65,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+    if (!this.onload) {
+      this.onLoad();
+    }
+    this.onload = false;
   },
 
   /**
@@ -72,62 +105,112 @@ Page({
   onShareAppMessage: function () {
   
   },
-  gettask : function (e) {
+  switchmemu: function (e) {
     var id = e.target.id.split("_")[1] - 0;
     index = id;
+    this.setData({ complateCheck: false });
     this.setData({ index: id });
     this.setData({ enjoy: this.data.enjoys[tils[id]] });
   },
   addContent: function (e) {
-    var optype = "add";
-    var _url = "../addContent/addContent?"
-    var id = e.target.id;
-    if (id) {
-      optype = "update";
-      _url += "id=enjoy-" + tils[index] + "-" + id.split("_")[1] + "&";
-    } else {
-      _url += "ctype=enjoy&";
-      optype = "add";
-    }
-    _url += 'type=' + optype;
-
-    wx.redirectTo({
-      url: _url,
+    var url = "../addContent/addContent?op=add"
+    wx.navigateTo({
+      url: url,
+    })
+  },
+  updateTask(e) {
+    var id = e.target.id.split("_")[1];
+    var enjoy = this.data.enjoy[id];
+    console.log(enjoy);
+    var url = "../addContent/addContent?op=update&task=" + JSON.stringify(enjoy);
+    wx.navigateTo({
+      url: url,
     })
   },
   updateOrDelete: function (e) {
-    var id = e.target.id.split("_")[1] - 0;
+    var id = e.currentTarget.id.split("_")[1] - 0;
     if (front_id !== -1) {
-      this.data.enjoy[front_id].isdisplay = false;
+      this.data.enjoy[front_id].opdisplay = false;
     }
-    this.data.enjoy[id].isdisplay = true;
+    this.data.enjoy[id].opdisplay = true;
     front_id = id;
     this.setData({ enjoy: this.data.enjoy });
   },
   deleteContent: function (e) {
     var id = e.target.id.split("_")[1] - 0;
-    var task = this.data.enjoy, taskN = [];
-    for (var i = 0; i < task.length; i++) {
-      if (i == id) {
-        continue;
-      }
-      taskN.push(task[i]);
-    }
-    task = taskN;
-    var tasks = this.data.enjoys;
-    tasks[tils[index]] = task;
-    this.setData({ enjoys: tasks });
-    this.setData({ enjoy: task });
-    wx.setStorage({
-      key: 'enjoy',
-      data: tasks,
+    var enjoy = this.data.enjoy;
+    wx.request({
+      url: config.deleteTask + "?id=" + enjoy[id].id,
     })
+    enjoy.splice(id, 1);
+    var enjoys = this.data.enjoys;
+    enjoys[tils[index]] = enjoy;
+    this.setData({ enjoys: enjoys });
+    this.setData({ enjoy: enjoy });
   },
   complateCont: function (e) {
-    var id = e.target.id - 0;
-    compont.complateCont(id, "enjoy", tils[index]);
-    this.setData({ enjoys: wx.getStorageSync("enjoy") });
-    this.setData({ enjoy: wx.getStorageSync("enjoy")[tils[index]] });
-    this.setData({ score: wx.getStorageSync("totalscore") });
-  }
+    var id = e.currentTarget.id.split("_")[1] - 0;
+    var enjoy = this.data.enjoy;
+    var score = this.data.score;
+    var ts = enjoy[id];
+    if (this.data.complateCheck) {
+      ts.complated -= 1;
+      if (ts.complated == 0) {
+        ts.display = false;
+      }
+      score -= ts.score - 0;
+      this.setData({
+        score
+      });
+      wx.request({
+        url: config.cancelTask + "?id=" + ts.id,
+      })
+    } else {
+      ts.complated += 1;
+      if (ts.complated >= ts.totalTime) {
+        ts.display = false;
+      }
+      score += ts.score - 0;
+      this.setData({
+        score
+      });
+      wx.request({
+        url: config.complateTask + "?id=" + ts.id + "&type=" + ts.taskType + "&name=" + ts.name,
+      })
+    }
+
+    var enjoys = this.data.enjoys;
+    enjoys[tils[index]] = enjoy;
+    this.setData({ enjoy: enjoy });
+    this.setData({ enjoys: enjoys });
+  },
+  showComplate: function (e) {
+    //true 是勾选，显示已完成的
+    var zx = !this.data.complateCheck;
+    var enjoy = this.data.enjoy;
+    for (let i = 0; i < enjoy.length; i++) {
+      if (zx) {
+        if (enjoy[i].complated > 0) {
+          enjoy[i].display = true;
+        } else {
+          enjoy[i].display = false;
+        }
+      } else {
+        if (enjoy[i].complated < enjoy[i].totalTime) {
+          enjoy[i].display = true;
+        } else {
+          enjoy[i].display = false;
+        }
+      }
+    }
+    this.setData({ enjoy: enjoy });
+    this.setData({ complateCheck: zx });
+  },
+  menuClick(e) {
+    if (front_id && front_id != -1) {
+      var enjoy = this.data.enjoy;
+      enjoy[front_id].opdisplay = false;
+      this.setData({ enjoy })
+    }
+  },
 })

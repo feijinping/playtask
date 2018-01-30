@@ -3,22 +3,36 @@
 <view>
   <view class="section">
     <view class="flex-wrp enjoy_bc" style="flex-direction:row;">
-      <label id='enjoy_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" bindtap='gettask'>享受</label>
-      <label id='enjoy_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_end" bindtap='gettask'>腐败</label>
+      <label id='enjoy_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" catch:tap='switchmemu'>享受</label>
+      <label id='enjoy_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_end" catch:tap='switchmemu'>腐败</label>
     </view>
   </view>
 </view>
 <scroll-view  scroll-y="{{true}}" style='height:{{height}}px;'>
-   <!-- <template is="task" data="{{task:enjoy}}"/> -->
    <view wx:for-items="{{enjoy}}" wx:key="{{item.index}}">
-    <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.time==item.complated||showcomplate?"display:none":"display:block"}}'>
-      <checkbox id='{{index}}' bind:tap="complateCont" checked='{{item.time == 0?true:false}}' disabled='{{item.time == item.complated}}'/>{{item.value}}
-      <view class='score_time'>
-        <text>{{item.score}}/{{item.time == -1?'∞':item.time}}/{{item.complated}}</text>
-      </view>
-        <image id="editimg_{{index}}" src='../../image/edit.jpg' class="{{item.isdisplay?'operation_img':'operation_img_hide'}}" bind:tap="addContent"></image>
-        <image id="delimg_{{index}}" src='../../image/delete.jpg' class="{{item.isdisplay?'operation_img':'operation_img_hide'}}" bind:tap="deleteContent"></image>
+      <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.display?"display:block":"display:none"}}'catch:tap="complateCont">
+        <view class='leftview1'>
+          {{item.name}}
+          <view>
+             {{item.complated==null?0:item.complated}}/{{item.totalTime == -1?'∞':item.totalTime}}
+          </view>
+        </view>
+        <view class='leftview2'>
+          <view class='score_time'>{{item.score}}</view>
+          <image id="editimg_{{index}}" src='../../image/edit.jpg' class="{{item.opdisplay?'operation_img':'operation_img_hide'}}" catch:tap="updateTask"></image>
+          <image id="delimg_{{index}}" src='../../image/delete.jpg' class="{{item.opdisplay?'operation_img':'operation_img_hide'}}" catch:tap="deleteContent"></image>
+        </view>
     </view>
   </view>
 </scroll-view>
-<include src="../template/footer.wxml" data="{{score:getApp().globalData.score}}"/>
+<view style='width:100%'>
+  <view style='float:right;width:15%;padding-top:3px'>
+   <image src="../../image/add.jpg" style='float:left;height:20px;width:20px' catch:tap='addContent'></image>
+  </view>
+  <view style='float:right;margin-right : 6%'>
+    <checkbox checked="{{complateCheck}}" catch:tap="showComplate"> </checkbox>
+  </view>
+  <view style='float:right;width:60%;padding-top:10rpx'>
+    <text class=''>{{score}}</text>
+  </view>
+</view>

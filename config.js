@@ -21,6 +21,9 @@ var config = {
     saveTask: `${host}/task/saveTask`,
     queryTask: `${host}/task/queryTask`,
     queryScore: `${host}/view/getStatistic`,
+
+    //enjoy
+    allEnjoy: `${host}/enjoy/allEnjoy`,
     // 登录地址，用于建立会话
     loginUrl: `${host}/login`,
 
