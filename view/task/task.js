@@ -196,8 +196,11 @@ Page({
     this.setData({ complateCheck: zx });
   },
   menuClick(e){
-    var task = this.data.task;
-    task[front_id].isdisplay = false;
-    this.setData({ task})
+    if (front_id && front_id!= -1){
+      var task = this.data.task;
+      task[front_id].isdisplay = false;
+      this.setData({ task })
+      front_id=-1;
+    }
   },
 })

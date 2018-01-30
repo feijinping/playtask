@@ -2,15 +2,15 @@
 <!-- <text>view/interface/interf.wxml</text> -->
 <view class="section">
   <view class="flex-wrp pri_set" style="flex-direction:row;">
-    <label id='task_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" bindtap='switchmemu'>每天</label>
-    <label id='task_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_start" bindtap='switchmemu'>每周</label>
-    <label id='task_2' class="{{index == 2?'flex-item-selected':'flex-item' }} bc_start" bindtap='switchmemu'>普通</label>
-    <label id='task_3' class="{{index == 3?'flex-item-selected':'flex-item' }} bc_end" bindtap='switchmemu'>副本</label>
+    <label id='task_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" catchtap='switchmemu'>每天</label>
+    <label id='task_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_start" catchtap='switchmemu'>每周</label>
+    <label id='task_2' class="{{index == 2?'flex-item-selected':'flex-item' }} bc_start" catchtap='switchmemu'>普通</label>
+    <label id='task_3' class="{{index == 3?'flex-item-selected':'flex-item' }} bc_end" catchtap='switchmemu'>副本</label>
   </view>
 </view>
 <scroll-view  scroll-y="true" style='height:{{height}}px;' bindtap='menuClick'>
     <view wx:for-items="{{task}}" wx:key="{{item.index}}">
-      <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.display?"display:block":"display:none"}}'bind:tap="complateCont">
+      <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.display?"display:block":"display:none"}}'catch:tap="complateCont">
         <view class='leftview1'>
           {{item.value}}
           <view>
