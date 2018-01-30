@@ -1,5 +1,5 @@
 /* view/addContent/addContent.wxss */
-.section__title{
+.section_title{
   float: left;
   margin-left: 50rpx;
   margin-top: 10rpx;

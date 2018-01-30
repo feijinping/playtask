@@ -15,7 +15,12 @@ var config = {
     // 所有好习惯
     allgoodhabit: `${host}/goodHabit/allGoodHabit`,
     alltask: `${host}/task/allTask`,
-
+    complateTask: `${host}/view/completeType`,
+    cancelTask: `${host}/view/cancelTask`,
+    deleteTask: `${host}/view/deleteTask`,
+    saveTask: `${host}/task/saveTask`,
+    queryTask: `${host}/task/queryTask`,
+    queryScore: `${host}/view/getStatistic`,
     // 登录地址，用于建立会话
     loginUrl: `${host}/login`,
 

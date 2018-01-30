@@ -2,24 +2,24 @@
 <view class='title-sty'>{{optype}}</view>
 <form bindsubmit="formSubmit" bindreset="formReset">
   <view class="section">
-    <view class="section__title" >名字</view>
-    <input class="title_value" name="value" placeholder="" value='{{task.value}}'/>
+    <view class="section_title" >名字</view>
+    <input class="title_value" name="value" placeholder="" value='{{task.name}}'/>
   </view>
   <view class="section">
-    <view class="section__title" >类型</view>
-    <radio-group class="title_value" bindchange="radioChange">
+    <view class="section_title" >类型</view>
+    <radio-group class="title_value" bindchange="radioChange" name="period">
       <label class="radio" wx:for-items="{{items}}" wx:key="item">
       <radio checked="{{item.checked}}" value='{{index}}'/>{{item.value}}
     </label>
    </radio-group>
   </view>
   <view class="section">
-    <view class="section__title">分数</view>
+    <view class="section_title">分数</view>
     <input class="title_value" name="score" placeholder="" value='{{task.score}}'/>
   </view>
   <view class="section">
-    <view class="section__title">次数</view>
-    <input class="title_value" name="time" placeholder="-1 表示不限次数" value='{{task.time}}'/>
+    <view class="section_title">次数</view>
+    <input class="title_value" name="time" placeholder="-1 表示不限次数" value='{{task.totalTime}}'/>
   </view>
   <view style='text-align:center'>
     <button form-type='submit' size='mini' style='margin-right:50rpx'>确认</button>

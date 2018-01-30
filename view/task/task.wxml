@@ -12,25 +12,25 @@
     <view wx:for-items="{{task}}" wx:key="{{item.index}}">
       <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.display?"display:block":"display:none"}}'catch:tap="complateCont">
         <view class='leftview1'>
-          {{item.value}}
+          {{item.name}}
           <view>
-             {{item.complated}}/{{item.time == -1?'∞':item.time}}
+             {{item.complated==null?0:item.complated}}/{{item.totalTime == -1?'∞':item.totalTime}}
           </view>
         </view>
         <view class='leftview2'>
           <view class='score_time'>{{item.score}}</view>
-          <image id="editimg_{{index}}" src='../../image/edit.jpg' class="{{item.isdisplay?'operation_img':'operation_img_hide'}}" bind:tap="addContent"></image>
-          <image id="delimg_{{index}}" src='../../image/delete.jpg' class="{{item.isdisplay?'operation_img':'operation_img_hide'}}" bind:tap="deleteContent"></image>
+          <image id="editimg_{{index}}" src='../../image/edit.jpg' class="{{item.opdisplay?'operation_img':'operation_img_hide'}}" catch:tap="updateTask"></image>
+          <image id="delimg_{{index}}" src='../../image/delete.jpg' class="{{item.opdisplay?'operation_img':'operation_img_hide'}}" catch:tap="deleteContent"></image>
         </view>
     </view>
   </view>
 </scroll-view>
 <view style='width:100%'>
   <view style='float:right;width:15%;padding-top:3px'>
-   <image src="../../image/add.jpg" style='float:left;height:20px;width:20px' bindtap='addContent'></image>
+   <image src="../../image/add.jpg" style='float:left;height:20px;width:20px' catch:tap='addContent'></image>
   </view>
   <view style='float:right;margin-right : 6%'>
-    <checkbox checked="{{complateCheck}}" bind:tap="showComplate"> </checkbox>
+    <checkbox checked="{{complateCheck}}" catch:tap="showComplate"> </checkbox>
   </view>
   <view style='float:right;width:60%;padding-top:10rpx'>
     <text class=''>{{score}}</text>
