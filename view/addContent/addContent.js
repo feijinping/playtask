@@ -21,22 +21,44 @@ Page({
    */
   onLoad: function (options) {
     var op = options.op;
-    if (op == 'update'){
-      var cont = JSON.parse(options.task);
-      var items = this.data.items;
-      if(cont.period === "DAILY"){
-        items[0].checked = true;
-      } else if(cont.period === "WEEKLY"){
-        items[1].checked = true;
-      }else{
-        items[2].checked = true;
+    var cType = options.cType;
+    if (cType === 'task' && op == 'update'){
+        var cont = JSON.parse(options.cont);
+        var items = this.data.items;
+        if (cont.period === "DAILY") {
+          items[0].checked = true;
+        } else if (cont.period === "WEEKLY") {
+          items[1].checked = true;
+        } else {
+          items[2].checked = true;
+        }
+        this.setData({ items: items });
+        this.setData({ task: cont });
+    } else if (cType === 'enjoy'){
+      var items = [{ value: "享受", checked: false }, { value: "腐败", checked: false }];
+      if (op == 'update') {
+        var cont = JSON.parse(options.cont);
+        if (cont.tag === "good") {
+          items[0].checked = true;
+        } else {
+          items[1].checked = true;
+        }
+        this.setData({ task: cont });
+        this.setData({ optype: op });
       }
-      this.setData({items:items});
-      this.setData({ task:cont});
-      this.setData({ optype: op});
-    }else{
-      this.setData({ optype: op});
+      this.setData({ items });
     }
+    if(op == "update"){
+      op = "修改";
+    }else{
+      op = "添加";
+    }
+    if (cType == "task"){
+      cType = "任务";
+    }else{
+      cType = "享受";
+    }
+    this.setData({ optype: op + " " + cType});
   },
 
   /**
@@ -88,30 +110,30 @@ Page({
   
   },
   retfontpage: function () {
-    wx.switchTab({
-      url: '/view/task/task'
-    })
+    wx.navigateBack();
   },
   formSubmit : function(e){
     var task = this.data.task;
-    var userid = app.globalData.userInfo.id;
+    var userid = app.globalData.userInfo.nickName;
     delete task["display"];
     delete task["opdisplay"];
     var va = e.detail.value;
     task.name=va.value;
     task.userid = userid;
     task.score = va.score;
-    task.period = period[va.period];
     task.totalTime = va.time;
+    var url = config.saveEnjoy;
+    if (task.period){
+      url = config.saveTask;
+      task.period = period[va.period];
+    }
     wx.request({
-      url: config.saveTask,
+      url: url,
       data: JSON.stringify(task),
       method:"POST",
       success:function(re){
         console.log(re);
-        wx.switchTab({
-          url: '/view/task/task'
-        })
+        wx.navigateBack()
       },
       fail:function(re){
         console.log(re);

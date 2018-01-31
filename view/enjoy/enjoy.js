@@ -52,6 +52,12 @@ Page({
         console.log(err);
       }
     })
+    wx.request({
+      url: config.queryScore,
+      success:function(re){
+        initScore(re.data)
+      }
+    })
   },
 
   /**
@@ -113,7 +119,7 @@ Page({
     this.setData({ enjoy: this.data.enjoys[tils[id]] });
   },
   addContent: function (e) {
-    var url = "../addContent/addContent?op=add"
+    var url = "../addContent/addContent?op=add&cType=enjoy"
     wx.navigateTo({
       url: url,
     })
@@ -122,7 +128,7 @@ Page({
     var id = e.target.id.split("_")[1];
     var enjoy = this.data.enjoy[id];
     console.log(enjoy);
-    var url = "../addContent/addContent?op=update&task=" + JSON.stringify(enjoy);
+    var url = "../addContent/addContent?op=update&cType=enjoy&cont=" + JSON.stringify(enjoy);
     wx.navigateTo({
       url: url,
     })
@@ -158,24 +164,26 @@ Page({
       if (ts.complated == 0) {
         ts.display = false;
       }
-      score -= ts.score - 0;
-      this.setData({
-        score
-      });
-      wx.request({
-        url: config.cancelTask + "?id=" + ts.id,
-      })
-    } else {
-      ts.complated += 1;
-      if (ts.complated >= ts.totalTime) {
-        ts.display = false;
-      }
       score += ts.score - 0;
       this.setData({
         score
       });
       wx.request({
-        url: config.complateTask + "?id=" + ts.id + "&type=" + ts.taskType + "&name=" + ts.name,
+        url: config.undoEnjoy + "?id=" + ts.id,
+      })
+    } else {
+      ts.complated += 1;
+      if (ts.totalTime == -1){
+        ts.display = true;
+      }else if (ts.complated >= ts.totalTime) {
+        ts.display = false;
+      }
+      score -= ts.score - 0;
+      this.setData({
+        score
+      });
+      wx.request({
+        url: config.doEnjoy + "?id=" + ts.id,
       })
     }
 
@@ -196,7 +204,9 @@ Page({
           enjoy[i].display = false;
         }
       } else {
-        if (enjoy[i].complated < enjoy[i].totalTime) {
+        if (enjoy[i].totalTime === -1) {
+          enjoy[i].display = true;
+        } else if (enjoy[i].complated < enjoy[i].totalTime) {
           enjoy[i].display = true;
         } else {
           enjoy[i].display = false;
@@ -207,7 +217,7 @@ Page({
     this.setData({ complateCheck: zx });
   },
   menuClick(e) {
-    if (front_id && front_id != -1) {
+    if ( front_id != -1) {
       var enjoy = this.data.enjoy;
       enjoy[front_id].opdisplay = false;
       this.setData({ enjoy })

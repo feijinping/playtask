@@ -24,6 +24,9 @@ var config = {
 
     //enjoy
     allEnjoy: `${host}/enjoy/allEnjoy`,
+    undoEnjoy: `${host}/enjoy/undoEnjoy`,
+    doEnjoy: `${host}/enjoy/doEnjoy`,
+    saveEnjoy: `${host}/enjoy/saveEnjoy`,
     // 登录地址，用于建立会话
     loginUrl: `${host}/login`,
 

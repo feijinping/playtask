@@ -14,13 +14,13 @@
 .leftview1{
   float: left;
   height: 40px;
-  width: 30%;
+  width: 50%;
   color: #9D9D9D;
 }
 .leftview2{
   float: left;
   height: 40px;
-  width: 70%;
+  width: 50%;
   color: #FF0000;
 }
 .score_time{

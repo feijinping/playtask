@@ -7,7 +7,7 @@ App({
   onLaunch: function () {
     wx.login({
       success: res => {
-        console.log("login success" + res)
+        console.log("login success")
       }
     })
     wx.getSetting({
@@ -15,7 +15,6 @@ App({
         if(res.authSetting['scope.userInfo']){
           wx.getUserInfo({
             success:res => {
-              console.log(res);
               this.globalData.userInfo = res.userInfo;
               if(this.userInfoReadyCallback){
                 this.userInfoReadyCallback(res);

@@ -23,7 +23,6 @@ Page({
     this.onload = true;
     var init = this.init;
     var initScore = (data)=>{
-      console.log(data);
       this.setData({
         score:data.banlance
       })
@@ -103,7 +102,7 @@ Page({
     this.setData({task: this.data.tasks[tils[id]]});
   },
   addContent : function(e){
-    var url = "../addContent/addContent?op=add"
+    var url = "../addContent/addContent?op=add&cType=task"
     wx.navigateTo({
       url: url,
     })
@@ -112,14 +111,14 @@ Page({
     var id = e.target.id.split("_")[1];
     var task = this.data.task[id];
     console.log(task);
-    var url = "../addContent/addContent?op=update&task=" + JSON.stringify(task);
+    var url = "../addContent/addContent?op=update&cType=task&cont=" + JSON.stringify(task);
     wx.navigateTo({
       url: url,
     })
   },
   updateOrDelete:function(e){
     var id = e.currentTarget.id.split("_")[1] - 0;
-    if (front_id !== -1){
+    if (front_id !== -1 && this.data.task[front_id]){
       this.data.task[front_id].opdisplay = false;
     }
     this.data.task[id].opdisplay=true;
@@ -197,7 +196,7 @@ Page({
     this.setData({ complateCheck: zx });
   },
   menuClick(e){
-    if (front_id && front_id != -1){
+    if (front_id != -1){
       var task = this.data.task;
       task[front_id].opdisplay = false;
       this.setData({ task })
