@@ -1,6 +1,9 @@
 var config = require("../../config.js");
+var custReq = require("../../resource.js")["request"];
+var waitData = require("../../resource.js")["waitData"];
 var tils = ["day","week","common","other"];
-var index = 0,front_id=-1;
+var resource = require("../../resource.js");
+var front_id=-1;
 Page({
 
   /**
@@ -9,10 +12,8 @@ Page({
   data: {
     tasks: [],
     task: [],
-    istask:true,
-    score:1,
+    score:0,
     index:0,
-    height: getApp().globalData.height,
     complateCheck:false
   },
 
@@ -21,67 +22,70 @@ Page({
    */
   onLoad: function (options) {
     this.onload = true;
-    var init = this.init;
-    var initScore = (data)=>{
-      this.setData({
-        score:data.banlance
-      })
+    var initScore = this.initScore;
+    var tasks = wx.getStorageSync("tasks");
+    var score = wx.getStorageSync("score");
+    var tBack = {
+      dType: "tasks",
+      back: this.init
+    };
+    var scback = {
+      dType: "score",
+      back: initScore
+    };
+    if(!tasks){
+      waitData(tBack);
+    }else{
+      this.init(tasks);
+      resource.validData(tBack);
     }
-    wx.request({
-      url: config.alltask,
-      success: function (result) {
-        var tasks = result.data;
-        var taskOfDay = [], taskOfWeek = [], taskOfComm = [],taskOfDuli=[];
-        for (let i = 0; i < tasks.length; i++) {
-          var task = tasks[i];
-          if ("DAILY" === task.period) {
-            taskOfDay.push(task);
-          } else if ("WEEKLY" === task.period) {
-            taskOfWeek.push(task);
-          } else if ("NONE" === task.period){
-            taskOfComm.push(task);
-          }else{
-            taskOfDuli.push(task);
-          }
-        }
-        init({
-          day: taskOfDay,
-          week: taskOfWeek,
-          common: taskOfComm,
-          other:taskOfDuli,
-        });
-      }
-    });
-    wx.request({
-      url: config.queryScore,
-      success:function(re){
-        initScore(re.data);
-      },
-      fail:function(err){
-        console.log(err)
-      }
-    });
+    if(score == null||score === undefined){
+      waitData(scback);
+    }else{
+      initScore(score);
+      resource.validData(scback);
+    }
   },
+  initScore(data){
+      if(!data){
+          data = 0;
+      }
+      if (typeof data === 'string') {
+          data = Number(data);
+          if (NaN == data) {
+            data = 0;
+          }
+      }
+      if(data > 99999){
+        data = Number(data).toExponential(2);
+      }
+      this.setData({
+        score: data
+      })
+    },
   init(tasks){
-    for (let task in tasks) {
-      for (let item in tasks[task]) {
-        var ts = tasks[task][item];
-        if(ts.complated >= ts.totalTime){
-          ts.display = false;
-        }else{
-          ts.display = true;
-        }
-        ts.opdisplay = false;
+    this.setData({ task: this.initTask(tasks.day), tasks:tasks });
+  },
+  initTask(ts){
+    for(let i = 0; i < ts.length; i++){
+      let task = ts[i];
+      task.opdisplay = false;
+      if (task.totalTime !== -1 && task.complated >= task.totalTime) {
+        task.display = false;
+      } else {
+        task.display = true;
       }
     }
-    this.setData({ task: tasks.day });
-    this.setData({ tasks: tasks });
+    return ts;
   },
   onShow: function () {
     if (!this.onload){
       this.onLoad();
     }
     this.onload = false;
+    this.setData({ index : 0,
+      complateCheck:false
+    });
   },
   /**
    * 用户点击右上角分享
@@ -91,18 +95,15 @@ Page({
   },
   switchmemu : function(e){
     var id = e.target.id.split("_")[1]-0;
-    if(id == 3){
-      this.setData({ istask: false });
-    }else{
-      this.setData({ istask: true });
-    }
-    index = id;
     this.setData({complateCheck: false});
     this.setData({index:id});
-    this.setData({task: this.data.tasks[tils[id]]});
+    this.setData({ task: this.initTask(this.data.tasks[tils[id]]) });
   },
   addContent : function(e){
     var url = "../addContent/addContent?op=add&cType=task"
+    if(this.data.index == 3){
+      url = "../duplicate/duplicate"
+    }
     wx.navigateTo({
       url: url,
     })
@@ -110,7 +111,6 @@ Page({
   updateTask(e){
     var id = e.target.id.split("_")[1];
     var task = this.data.task[id];
-    console.log(task);
     var url = "../addContent/addContent?op=update&cType=task&cont=" + JSON.stringify(task);
     wx.navigateTo({
       url: url,
@@ -118,39 +118,44 @@ Page({
   },
   updateOrDelete:function(e){
     var id = e.currentTarget.id.split("_")[1] - 0;
-    if (front_id !== -1 && this.data.task[front_id]){
-      this.data.task[front_id].opdisplay = false;
+    var task = this.data.task;
+    if (front_id !== -1 && task[front_id]){
+      task[front_id].opdisplay = false;
     }
-    this.data.task[id].opdisplay=true;
     front_id = id;
-    this.setData({task:this.data.task});
+    task[id].opdisplay=true;
+    this.setData({task});
   },
   deleteContent:function(e){
     var id = e.target.id.split("_")[1] - 0;
     var task = this.data.task;
+    var tasks = this.data.tasks;
     wx.request({
       url: config.deleteTask+"?id=" + task[id].id,
     })
     task.splice(id,1);
-    var tasks = this.data.tasks;
-    tasks[tils[index]] = task;
-    this.setData({ tasks: tasks});
+    tasks[tils[this.data.index]] = task;
+    wx.setStorageSync("tasks", tasks);
+    this.setData({tasks: tasks});
     this.setData({task:task});
   },
   complateCont:function(e){
     var id = e.currentTarget.id.split("_")[1] - 0;
     var task = this.data.task;
-    var score = this.data.score;
+    var score = wx.getStorageSync("score");
+    score = score ? score : 0;
+    var tasks = this.data.tasks;
+
     var ts = task[id];
-    if (this.data.complateCheck){
+    if (this.data.complateCheck ){
+      if (ts.complated <= 0){
+        return;
+      }
       ts.complated -= 1;
       if (ts.complated == 0){
         ts.display = false;
       }
       score -= ts.score-0;
-      this.setData({
-        score
-      });
       wx.request({
         url: config.cancelTask + "?id=" + ts.id,
       })
@@ -160,18 +165,17 @@ Page({
         ts.display = false;
       }
       score += ts.score - 0;
-      this.setData({
-        score
-      });
       wx.request({
-        url: config.complateTask + "?id="+ ts.id +"&type="+ts.taskType+"&name=" + ts.name,
+        url: config.complateTask + "?id="+ ts.id,
       })
     }
-    
-    var tasks = this.data.tasks;
-    tasks[tils[index]] = task;
-    this.setData({ task: task});
-    this.setData({ tasks: tasks });
+   
+    tasks[tils[this.data.index]] = task;
+    wx.setStorageSync("tasks", tasks);
+    wx.setStorageSync("score", score);
+
+    this.setData({  task, tasks});
+    this.initScore(score);
   }, 
   showComplate : function (e) {
     //true 是勾选，显示已完成的
@@ -192,14 +196,16 @@ Page({
         }
       }
     }
-    this.setData({ task: task });
-    this.setData({ complateCheck: zx });
+    this.setData({ task, complateCheck: zx});
   },
   menuClick(e){
-    if (front_id != -1){
-      var task = this.data.task;
+    var task = this.data.task;
+    if (front_id != -1 && task[front_id] && task[front_id].opdisplay){
       task[front_id].opdisplay = false;
       this.setData({ task })
     }
   },
+  syncContent(e){
+    resource.syncData();
+  }
 })

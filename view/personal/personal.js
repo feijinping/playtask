@@ -37,7 +37,22 @@ Page({
       })
     }
   },
-
+  reAuth(){
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userinfo']) {
+          wx.authorize({
+            scope: 'scope.userinfo',
+            success() {
+              // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+              //wx.startRecord()
+              console.log("chengg")
+            }
+          })
+        }
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

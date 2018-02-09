@@ -1,4 +1,11 @@
 /* view/interface/interf.wxss */
+.quanpin{
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+}
 .section{
   white-space: nowrap;
   text-align: center;
@@ -10,12 +17,12 @@
   line-height:60rpx;
   width: 24%;
   font-size: 40rpx;
-  color: #66CCFF;
+  color: #00b0ff;
 }
 .flex-item-selected{
   height: 60rpx;
   display: inline-block;
-  background-color: #66CCFF;
+  background-color: #00b0ff;
   text-align: center;
   line-height:60rpx;
   width: 24%;
@@ -27,9 +34,9 @@
 }
 
 .task_item{
-  height: 8%;
   width:  95%;
   margin:20rpx 3%;
+  height:40px;
 }
 
 /* text{
@@ -60,4 +67,29 @@ input{
 .score_time{
   float: right;
   margin-right:10px; 
+}
+.opbuttom{
+  position: absolute;
+  width: 100%;
+  bottom: 5px;
+}
+.operation_img{
+  height: 20px;
+  width:20px;
+  float: left;
+  margin-left: 10px;
+  padding-top:5px;
+}
+.flooterImg{
+  float:left;height:20px;width:20px
+}
+.flooterImg2{
+  float:left;height:20px;width:25px
+}
+.marginrightScore{
+  float: left;
+  width: 29%;
+  height:30px;
+  padding-top: 5px;
+  text-align: center;
 }

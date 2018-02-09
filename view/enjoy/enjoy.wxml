@@ -1,14 +1,13 @@
 <!--view/enjoy/enjoy.wxml-->
-<import src="../template/compont.wxml"/>
 <view>
   <view class="section">
     <view class="flex-wrp enjoy_bc" style="flex-direction:row;">
-      <label id='enjoy_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" catch:tap='switchmemu'>享受</label>
-      <label id='enjoy_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_end" catch:tap='switchmemu'>腐败</label>
+      <label id='enjoy_0' class="{{index == 0?'flex-item-selected':'flex-item' }} bc_start" catch:tap='switchmemu'>{{good}}</label>
+      <label id='enjoy_1' class="{{index == 1?'flex-item-selected':'flex-item' }} bc_end" catch:tap='switchmemu'>{{bad}}</label>
     </view>
   </view>
 </view>
-<scroll-view  scroll-y="{{true}}" style='height:{{height}}px;'catch:tap="menuClick">
+<scroll-view  scroll-y="{{true}}" catch:tap="menuClick">
    <view wx:for-items="{{enjoy}}" wx:key="{{item.index}}">
       <view id='compont_{{index}}' class="task_item" bind:longpress="updateOrDelete"style='{{item.display?"display:block":"display:none"}}'catch:tap="complateCont">
         <view class='leftview1'>
@@ -25,14 +24,17 @@
     </view>
   </view>
 </scroll-view>
-<view style='width:100%'>
-  <view style='float:right;width:15%;padding-top:3px'>
-   <image src="../../image/add.jpg" style='float:left;height:20px;width:20px' catch:tap='addContent'></image>
+<view class='opbuttom'>
+    <view class='marginrightScore'>
+        <text class='scoresize'>{{score}}</text>
+    </view>
+    <view class='marginright'>
+        <image src="../../image/info/sync.jpg" class='flooterImg2' catch:tap='syncContent'></image>
+    </view>
+    <view class='marginright'>
+        <image src="../../image/add.jpg" class='flooterImg' catch:tap='addContent'></image>
+    </view>
+    <view class='marginright'>
+        <switch class='flootercenter' checked='{{complateCheck}}' bindchange="showComplate"/>
+    </view>
   </view>
-  <view style='float:right;margin-right : 6%'>
-    <checkbox checked="{{complateCheck}}" catch:tap="showComplate"> </checkbox>
-  </view>
-  <view style='float:right;width:60%;padding-top:10rpx'>
-    <text class=''>{{score}}</text>
-  </view>
-</view>

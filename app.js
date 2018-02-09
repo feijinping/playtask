@@ -1,15 +1,34 @@
 var config = require("./config.js");
+const wafer = require('./vendors/wafer-client-sdk/index');
+const lab = require('./lib/lab');
+var custReq = require("./resource.js")["request"];
+var getDatas = require("./resource.js")["getDatas"];
+var resource = require("./resource.js");
 App({
 
   /**
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
    */
   onLaunch: function () {
-    wx.login({
-      success: res => {
-        console.log("login success")
-      }
-    })
+    wafer.setLoginUrl(config.loginUrl);
+    var that = this;
+    wafer.request({
+      login: true,
+      url: config.requestUrl,
+      method: 'GET',
+      success: (res) => {
+        wx.setStorageSync("userid", res.data.data.userInfo.openId);
+        that.globalData.userInfo = that.globalData.userInfo ? that.globalData.userInfo:res.data.data.userInfo;
+        getDatas();
+        wx.request({
+          url: config.saveUser,
+          method:'POST',
+          data:JSON.stringify(res.data.data.userInfo),
+          success(res){
+            console.log("save user " + res.data);
+          }
+        })
+      }});
     wx.getSetting({
       success:res=>{
         if(res.authSetting['scope.userInfo']){
@@ -22,11 +41,11 @@ App({
             }
           })
         }
+      },
+      fail(re){
+        console.log(re);
       }
     })
-    var info = wx.getSystemInfoSync();
-    var hg = info.windowHeight;
-    this.globalData.height = hg - 66;
   },
   
 
@@ -41,7 +60,7 @@ App({
    * 当小程序从前台进入后台，会触发 onHide
    */
   onHide: function () {
-    
+    resource.syncData();
   },
 
   /**
@@ -52,8 +71,6 @@ App({
   },
   
   globalData:{
-    userInfo:null,
-    score:120,
-    height:560
+    userInfo:null
   }
 })

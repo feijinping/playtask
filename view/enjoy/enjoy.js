@@ -1,18 +1,21 @@
 // view/enjoy/enjoy.js
-var compont = require("../template/compont.js");
 var tils = ["good", "bad"];
 var index = 0,front_id = -1;
 var config = require("../../config.js");
+var custReq = require("../../resource.js")["request"];
+var waitData = require("../../resource.js")["waitData"];
+var resource = require("../../resource.js");
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    height: getApp().globalData.height,
-    score: wx.getStorageSync("totalscore"),
-    enjoys: wx.getStorageSync("enjoy"),
+    score: 0,
+    enjoys: [],
     enjoy:[],
+    good:"享受",
+    bad:"腐败",
     index:0,
     complateCheck:false,
   },
@@ -22,44 +25,67 @@ Page({
    */
   onLoad: function (options) {
     var init = (enjoys)=>{
-      this.setData({ enjoys: enjoys })
-      this.setData({ enjoy: enjoys[tils[0]] });
+      this.setData({ enjoys, enjoy: this.initEnjoy(enjoys[tils[0]]) })
     }
-    var initScore = (data)=>{
-      this.setData({ score: data.banlance});
+    var initConf = (configs)=>{
+      this.setData({
+        good: configs["enjoyofgood"],
+        bad: configs["enjoyofbad"]
+      });
     }
-    wx.request({
-      url: config.allEnjoy,
-      success:function(result){
-        var enjoys = result.data;
-        var enjoyOfGood=[],enjoyOfBad = [];
-        for (let i = 0; i < enjoys.length; i ++){
-          var enjoy = enjoys[i];
-          enjoy.display = true;
-          enjoy.opdisplay = false;
-          if(enjoy.tag === "good"){
-            enjoyOfGood.push(enjoy);
-          }else{
-            enjoyOfBad.push(enjoy);
-          }
-        }
-        init({
-          good:enjoyOfGood,
-          bad:enjoyOfBad
-        })
-      },
-      fail:function(err){
-        console.log(err);
+    var initScore = this.initScore;
+    var enjoys = wx.getStorageSync("enjoys");
+    var score = wx.getStorageSync("score");
+    var configs = wx.getStorageSync("configs");
+
+    var eOptions = { dType: "enjoys",back: init};
+    var sOptions = { dType: "score",back: initScore};
+    var cOptions = { dType: "configs", back: initConf };
+    if(configs){
+      initConf(configs);
+    }
+    if (!enjoys) {
+      waitData(eOptions);
+    } else {
+      init(enjoys);
+      resource.validData(eOptions);
+    }
+    if (!score) {
+      waitData(sOptions);
+    } else {
+      initScore(score);
+      resource.validData(sOptions);
+    }
+  },
+  initScore(data) {
+    if (!data) {
+      data = 0;
+    }
+    if (typeof data === 'string') {
+      data = Number(data);
+      if (NaN == data) {
+        data = 0;
       }
-    })
-    wx.request({
-      url: config.queryScore,
-      success:function(re){
-        initScore(re.data)
-      }
+    }
+    if (data > 99999) {
+      data = Number(data).toExponential(2);
+    }
+    this.setData({
+      score: data
     })
   },
-
+  initEnjoy(ts) {
+    for (let i = 0; i < ts.length; i++) {
+      let task = ts[i];
+      task.opdisplay = false;
+      if (task.totalTime !== -1 && task.complated >= task.totalTime) {
+        task.display = false;
+      } else {
+        task.display = true;
+      }
+    }
+    return ts;
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -75,6 +101,7 @@ Page({
       this.onLoad();
     }
     this.onload = false;
+    this.setData({ index: 0 });
   },
 
   /**
@@ -116,7 +143,7 @@ Page({
     index = id;
     this.setData({ complateCheck: false });
     this.setData({ index: id });
-    this.setData({ enjoy: this.data.enjoys[tils[id]] });
+    this.setData({ enjoy: this.initEnjoy(this.data.enjoys[tils[id]]) });
   },
   addContent: function (e) {
     var url = "../addContent/addContent?op=add&cType=enjoy"
@@ -135,7 +162,7 @@ Page({
   },
   updateOrDelete: function (e) {
     var id = e.currentTarget.id.split("_")[1] - 0;
-    if (front_id !== -1) {
+    if (front_id !== -1 && this.data.enjoy[front_id]) {
       this.data.enjoy[front_id].opdisplay = false;
     }
     this.data.enjoy[id].opdisplay = true;
@@ -146,28 +173,33 @@ Page({
     var id = e.target.id.split("_")[1] - 0;
     var enjoy = this.data.enjoy;
     wx.request({
-      url: config.deleteTask + "?id=" + enjoy[id].id,
+      url: config.deleteEnjoy + "?id=" + enjoy[id].id,
     })
     enjoy.splice(id, 1);
     var enjoys = this.data.enjoys;
     enjoys[tils[index]] = enjoy;
+
+    wx.setStorageSync("enjoys", enjoys)
     this.setData({ enjoys: enjoys });
     this.setData({ enjoy: enjoy });
   },
   complateCont: function (e) {
     var id = e.currentTarget.id.split("_")[1] - 0;
     var enjoy = this.data.enjoy;
-    var score = this.data.score;
+    var score = wx.getStorageSync("score");
     var ts = enjoy[id];
+    var enjoys = this.data.enjoys;
+    score = score ? score : 0;
     if (this.data.complateCheck) {
+      if (ts.complated == 0){
+        return;
+      }
       ts.complated -= 1;
       if (ts.complated == 0) {
         ts.display = false;
       }
       score += ts.score - 0;
-      this.setData({
-        score
-      });
+      
       wx.request({
         url: config.undoEnjoy + "?id=" + ts.id,
       })
@@ -179,17 +211,17 @@ Page({
         ts.display = false;
       }
       score -= ts.score - 0;
-      this.setData({
-        score
-      });
+      
       wx.request({
         url: config.doEnjoy + "?id=" + ts.id,
       })
     }
-
-    var enjoys = this.data.enjoys;
     enjoys[tils[index]] = enjoy;
-    this.setData({ enjoy: enjoy });
+    
+    wx.setStorageSync("enjoys", enjoys);
+    wx.setStorageSync("score", score);
+    this.initScore(score);
+    this.setData({ enjoy });
     this.setData({ enjoys: enjoys });
   },
   showComplate: function (e) {
@@ -216,11 +248,15 @@ Page({
     this.setData({ enjoy: enjoy });
     this.setData({ complateCheck: zx });
   },
+
   menuClick(e) {
-    if ( front_id != -1) {
-      var enjoy = this.data.enjoy;
+    var enjoy = this.data.enjoy;
+    if (front_id != -1 && enjoy[front_id]) {
       enjoy[front_id].opdisplay = false;
       this.setData({ enjoy })
     }
   },
+  syncContent(e) {
+    resource.syncData();
+  }
 })

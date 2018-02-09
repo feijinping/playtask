@@ -4,21 +4,27 @@
     <image class="userinfo-avatar" src='{{userInfo.avatarUrl}}' backgroud-size="cover"></image>
     <view>
     <text>{{userInfo.nickName}}</text>
+    <view wx:if="{{!hasUserInfo}}">
+      <button size='mini' catchtap='reAuth' type='primary'>创建用户</button>
+    </view>
     </view>
   </view>
   <view class='operation'>
-    <view class='operation-item'>
+    <!-- <view class='operation-item'>
       历史记录
-    </view>
+    </view> -->
+    
     <view class='operation-item'>
-      钱包
-    </view>
-    <view class='operation-item'>
+      <navigator url='../feedback/feedback'>
       反馈
+      </navigator>
     </view>
     <view class='operation-item'>
-      设置
+       <navigator url='../setting/setting'>设置</navigator>
     </view>
+    <!-- <view class='operation-item'>
+      帮助文档
+    </view> -->
   </view>
 </view>
 

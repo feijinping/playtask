@@ -1,8 +1,0 @@
-<template name="task">
-  
-</template>
-<template name="change">
-  <view wx:for="{{task}}" wx:key="unique">
-    <view class="task_item">{{item.value}}</view>
-  </view>
-</template>

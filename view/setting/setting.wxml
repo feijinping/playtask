@@ -1,0 +1,28 @@
+<!--view/setting/setting.wxml-->
+<view class='quanpin'>
+  <view class='view-center'>
+    设置
+  </view>
+  <form bindsubmit='setSetting' bindreset='cancel'>
+    <view style='height:50px;padding-top:20px;padding-left:20px'>
+     <picker mode='selector' range ='{{hours}}' value='{{timeindex}}' name="daystart" bindchange='timetap'>
+        一天的开始时间： <view class='picker'>{{hours[timeindex]}}</view>
+    </picker>
+    </view>
+    <view style='height:50px;padding-left:20px'>
+      <picker mode='selector' range='{{weeks}}' value='dayindex' name="weekstart" bindchange='daytap'>
+         一周的开始日：<view class='picker'>{{weeks[dayindex]}}</view>
+      </picker>
+    </view>
+    <view style='height:50px;padding-left:20px'>
+         奖励标签1：<input class='picker' name="enjoyofgood" value='{{good}}'></input>
+    </view>
+    <view style='height:50px;padding-left:20px'>
+         奖励标签2：<input class='picker' name="enjoyofbad" value='{{bad}}'></input>
+    </view>
+    <view class='view-center'>
+      <button form-type='submit' size='mini' style='margin-right:10px'> 确认</button>
+      <button form-type='reset' size='mini' > 取消</button>
+    </view>
+  </form>
+</view>

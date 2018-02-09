@@ -1,0 +1,18 @@
+/* view/setting/setting.wxss */
+.quanpin{
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+}
+.view-center{
+  margin: 2px 0px;
+  text-align: center;
+}
+.picker{
+  float: right;
+  margin-right: 10px;
+  text-align: center;
+  width: 50%;
+}

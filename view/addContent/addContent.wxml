@@ -3,7 +3,7 @@
 <form bindsubmit="formSubmit" bindreset="formReset">
   <view class="section">
     <view class="section_title" >名字</view>
-    <input class="title_value" name="value" placeholder="" value='{{task.name}}'/>
+    <input class="title_value" name="value" placeholder="" value='{{task.name}}' maxlength="11"/>
   </view>
   <view class="section">
     <view class="section_title" >类型</view>
@@ -15,11 +15,11 @@
   </view>
   <view class="section">
     <view class="section_title">分数</view>
-    <input class="title_value" name="score" placeholder="" value='{{task.score}}'/>
+    <input class="title_value" name="score" placeholder="" type="number" value='{{task.score}}' maxlength='5'/>
   </view>
   <view class="section">
     <view class="section_title">次数</view>
-    <input class="title_value" name="time" placeholder="-1 表示不限次数" value='{{task.totalTime}}'/>
+    <input class="title_value" name="time" placeholder="-1 表示不限次数" type="number" value='{{task.totalTime}}' maxlength='5'/>
   </view>
   <view style='text-align:center'>
     <button form-type='submit' size='mini' style='margin-right:50rpx'>确认</button>

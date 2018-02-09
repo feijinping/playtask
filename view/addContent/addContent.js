@@ -1,9 +1,9 @@
 // view/addContent/addContent.js
-var ctype = 0;
-var path = [];
-var id = -1;
 var period = ["DAILY","WEEKLY","NONE"];
+var itypes = ["day", "week", "common"];
 var config = require("../../config.js");
+var custReq = require("../../resource.js")["request"];
+var util = require("../util/util.js");
 var app = getApp();
 Page({
 
@@ -13,7 +13,9 @@ Page({
   data: {
     items: [{ value: "每日", checked: false }, { value: "每周", checked: false }, { value: "普通", checked: false }],
     task:{},
-    optype:""
+    optype:"",
+    cType:"",
+    op:""
   },
 
   /**
@@ -22,9 +24,9 @@ Page({
   onLoad: function (options) {
     var op = options.op;
     var cType = options.cType;
+    var cont = options.cont?JSON.parse(options.cont):{};
+    var items = this.data.items;
     if (cType === 'task' && op == 'update'){
-        var cont = JSON.parse(options.cont);
-        var items = this.data.items;
         if (cont.period === "DAILY") {
           items[0].checked = true;
         } else if (cont.period === "WEEKLY") {
@@ -32,22 +34,31 @@ Page({
         } else {
           items[2].checked = true;
         }
-        this.setData({ items: items });
-        this.setData({ task: cont });
     } else if (cType === 'enjoy'){
-      var items = [{ value: "享受", checked: false }, { value: "腐败", checked: false }];
+      var configs = wx.getStorageSync("configs");
+      items = [{ value: configs['enjoyofgood'], checked: false }, { value: configs['enjoyofbad'], checked: false }];
       if (op == 'update') {
-        var cont = JSON.parse(options.cont);
         if (cont.tag === "good") {
           items[0].checked = true;
         } else {
           items[1].checked = true;
         }
-        this.setData({ task: cont });
         this.setData({ optype: op });
       }
-      this.setData({ items });
     }
+    this.setData({ items });
+    this.setData({ task: cont });
+    if(!cont.id){
+      let that = this;
+      custReq({
+        url: cType === 'enjoy' ? config.queryMaxIdOfEnjoy : config.queryMaxIdOfTask,
+        success:function(re){
+          cont.id = re.data;
+          that.setData({ task: cont });
+        }
+      })
+    }
+    this.setData({ op, cType });
     if(op == "update"){
       op = "修改";
     }else{
@@ -56,7 +67,7 @@ Page({
     if (cType == "task"){
       cType = "任务";
     }else{
-      cType = "享受";
+      cType = "奖励";
     }
     this.setData({ optype: op + " " + cType});
   },
@@ -114,33 +125,54 @@ Page({
   },
   formSubmit : function(e){
     var task = this.data.task;
-    var userid = app.globalData.userInfo.nickName;
+    var userid = wx.getStorageSync('userid');
     delete task["display"];
     delete task["opdisplay"];
     var va = e.detail.value;
     task.name=va.value;
     task.userid = userid;
-    task.score = va.score;
-    task.totalTime = va.time;
+    task.score = va.score - 0;
+    task.totalTime = va.time - 0;
     var url = config.saveEnjoy;
-    if (task.period){
-      url = config.saveTask;
+    var iType = "";
+    if (this.data.cType == 'task') {
+      task.taskType = "TASK";
       task.period = period[va.period];
+      url = config.saveTask;
+      iType = itypes[va.period];
+    }else{
+      task.tag = va.period === '0'?'good':'bad';
+      iType = task.tag;
     }
-    wx.request({
+    if (this.data.op == 'add') {
+      task.complated = 0;
+      task.tag = task.tag?task.tag:'';
+      task.tacticsid = 1;
+    }
+    
+    util.addtask({
+      dType: this.data.cType == 'task'?"tasks":"enjoys",
+      iType,
+      opType: this.data.op,
       url: url,
       data: JSON.stringify(task),
-      method:"POST",
-      success:function(re){
-        console.log(re);
-        wx.navigateBack()
-      },
-      fail:function(re){
-        console.log(re);
-      }
-    })
+      method: "POST"
+    });
+    wx.navigateBack()
+    // custReq({
+    //   url: url,
+    //   data: JSON.stringify(task),
+    //   method:"POST",
+    //   success:function(re){
+    //     if(re.statusCode === 200){
+    //       wx.navigateBack()
+    //     }else{
+    //       console.log(re);
+    //     }
+    //   },
+    //   fail:function(re){
+    //     console.log(re);
+    //   }
+    // })
   },
-  radioChange : function(e){
-    ctype = e.detail.value - 0;
-  }
 })

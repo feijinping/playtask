@@ -1,9 +1,12 @@
 {
   "pages": [
     "view/task/task",
+    "view/setting/setting",
+    "view/feedback/feedback",
     "view/enjoy/enjoy",
     "view/addContent/addContent",
-    "view/personal/personal"
+    "view/personal/personal",
+    "view/duplicate/duplicate"
   ],
   "tabBar": {
     "color": "#7A7E83",
@@ -21,12 +24,12 @@
         "pagePath": "view/enjoy/enjoy",
         "iconPath": "image/2-2.jpg",
         "selectedIconPath": "image/2-1.jpg",
-        "text": "享受"
+        "text": "奖励"
       },
       {
         "pagePath": "view/personal/personal",
-        "iconPath": "image/4-2.jpg",
-        "selectedIconPath": "image/4-1.jpg",
+        "iconPath": "image/3-2.jpg",
+        "selectedIconPath": "image/3-1.jpg",
         "text": "我的"
       }
     ]
@@ -34,7 +37,7 @@
   "window": {
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Paly人生",
+    "navigationBarTitleText": "习惯管家",
     "backgroundColor": "#eeeeee",
     "backgroundTextStyle": "light"
   }

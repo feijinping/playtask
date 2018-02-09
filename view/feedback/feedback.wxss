@@ -1,0 +1,19 @@
+/* view/feedback/feedback.wxss */
+.gzhimg{
+  width: 200px;
+  height: 200px;
+}
+.content1{
+  border:1px solid #66CCFF;
+  border-radius:5px;
+  float: left;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+.viewCont{
+  width:100%;
+  height:30%;
+  margin-top:10%;
+  margin-left:6%;
+
+}

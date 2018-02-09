@@ -1,0 +1,13 @@
+<view class='quanpin center_view'>
+<!-- class="center_view" -->
+    <form  bindsubmit="submit" bindreset="cancel">
+    <view class='viewCont'>
+      <textarea name="content1" class='content1' maxlength="255" placeholder="请输入建议"></textarea>
+    </view>
+    <view>
+      <button form-type='submit' size='mini'>提交</button>
+      <button formType="reset" size='mini'>取消</button>
+    </view>
+    </form>
+</view>
+
